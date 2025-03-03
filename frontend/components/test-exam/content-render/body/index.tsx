@@ -1,7 +1,10 @@
 'use client';
 
 import { useContext } from 'react';
+import { SectionType } from '@prisma/client';
+import { EditContext } from '@/global/edit-context';
 import { ExamContext } from '@/global/exam-context';
+import AudioPlayer from '@/components/audio-player';
 import { CompletionRender } from '@/components/question-type/completion';
 import { IdentifyInfoRender } from '@/components/question-type/identify-info/render';
 import { MatchingRender } from '@/components/question-type/matching';
@@ -18,119 +21,222 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { PassageRender } from '../../passage/passage-render';
 
 const PartBodyContentRender = () => {
-  const { selectedPart } = useContext(ExamContext);
+  const { selectedPart, selectedAssessment } = useContext(ExamContext);
   if (!selectedPart) {
     return null;
   }
-  return (
-    <div className="h-full">
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="rounded-lg flex-grow"
-      >
-        <ResizablePanel defaultSize={50} className="overflow-auto h-full">
-          <ScrollArea
-            type="always"
-            className="w-full h-full overflow-auto pl-4 pr-8"
-          >
-            {selectedPart.passage ? (
-              <PassageRender passage={selectedPart.passage} />
-            ) : (
-              <ActionButton
-                actionType="create"
-                editType="createPassage"
-                data={{ part: selectedPart }}
-              >
-                <div className={buttonVariants()}>New Passage</div>
-              </ActionButton>
-            )}
 
-            <ScrollBar className="w-4" />
-          </ScrollArea>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50}>
-          <ScrollArea
-            type="always"
-            className="w-full h-full overflow-auto pl-4 pr-8"
-          >
-            <div className="flex justify-end">
-              <ActionButton
-                actionType="create"
-                editType="createQuestionGroup"
-                data={{ part: selectedPart }}
-              >
-                <div className={buttonVariants()}>New Question Group</div>
-              </ActionButton>
-            </div>
+  if (!selectedAssessment) {
+    return null;
+  }
 
-            {selectedPart.questionGroups.map((questionGroup) => {
-              return (
-                <div key={questionGroup.id} className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-bold">
-                        Questions {questionGroup.startQuestionNumber}-
-                        {questionGroup.endQuestionNumber}
-                      </p>
-                      <p className=" whitespace-pre-line">
-                        {questionGroup.title}
-                      </p>
+  if (selectedAssessment.sectionType === SectionType.READING) {
+    return (
+      <div className="h-full">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="rounded-lg flex-grow"
+        >
+          <ResizablePanel defaultSize={50} className="overflow-auto h-full">
+            <ScrollArea
+              type="always"
+              className="w-full h-full overflow-auto pl-4 pr-8"
+            >
+              {selectedPart.passage ? (
+                <PassageRender passage={selectedPart.passage} />
+              ) : (
+                <ActionButton
+                  actionType="create"
+                  editType="createPassage"
+                  data={{ part: selectedPart }}
+                >
+                  <div className={buttonVariants()}>New Passage</div>
+                </ActionButton>
+              )}
+
+              <ScrollBar className="w-4" />
+            </ScrollArea>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={50}>
+            <ScrollArea
+              type="always"
+              className="w-full h-full overflow-auto pl-4 pr-8"
+            >
+              <div className="flex justify-end">
+                <ActionButton
+                  actionType="create"
+                  editType="createQuestionGroup"
+                  data={{ part: selectedPart }}
+                >
+                  <div className={buttonVariants()}>New Question Group</div>
+                </ActionButton>
+              </div>
+
+              {selectedPart.questionGroups.map((questionGroup) => {
+                return (
+                  <div key={questionGroup.id} className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-bold">
+                          Questions {questionGroup.startQuestionNumber}-
+                          {questionGroup.endQuestionNumber}
+                        </p>
+                        <p className=" whitespace-pre-line">
+                          {questionGroup.title}
+                        </p>
+                      </div>
+                      <div>
+                        <ActionButton
+                          actionType="update"
+                          editType="editQuestionGroup"
+                          data={{ questionGroup }}
+                        />
+                        <ActionButton
+                          actionType="delete"
+                          editType="deleteQuestionGroup"
+                          data={{ questionGroup }}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <ActionButton
-                        actionType="update"
-                        editType="editQuestionGroup"
-                        data={{ questionGroup }}
+
+                    {questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER' &&
+                      questionGroup.multiOneList.map((multiOne) => (
+                        <MultiOneRender multiOne={multiOne} key={multiOne.id} />
+                      ))}
+                    {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' &&
+                      questionGroup.multiMoreList.map((multiMore) => (
+                        <MultiMoreRender
+                          multiMore={multiMore}
+                          key={multiMore.id}
+                        />
+                      ))}
+                    {questionGroup.type === 'IDENTIFYING_INFORMATION' &&
+                      questionGroup.identifyInfoList.map((identifyInfo) => (
+                        <IdentifyInfoRender
+                          identifyInfo={identifyInfo}
+                          key={identifyInfo.id}
+                        />
+                      ))}
+                    {(questionGroup.type === 'COMPLETION' ||
+                      questionGroup.type === 'TABLE_COMPLETION') && (
+                      <CompletionRender questionGroup={questionGroup} />
+                    )}
+                    {questionGroup.type === 'MATCHING' && (
+                      <MatchingRender questionGroup={questionGroup} />
+                    )}
+                    {/* {questionGroup.type === 'MATCHING_HEADING' && (
+                      <MatchingHeadingRender
+                        matchingHeading={questionGroup.matchingHeading}
                       />
-                      <ActionButton
-                        actionType="delete"
-                        editType="deleteQuestionGroup"
-                        data={{ questionGroup }}
-                      />
-                    </div>
+                    )}
+                    */}
                   </div>
+                );
+              })}
+              <ScrollBar className="w-4" />
+            </ScrollArea>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
+    );
+  }
+  if (selectedAssessment.sectionType === SectionType.WRITTING) {
+    return (
+      <div className="h-full">
+        <ScrollArea
+          type="always"
+          className="w-full h-full overflow-auto pl-4 pr-4"
+        >
+          <textarea className="w-full h-screen bg-gray-100" />
+          <ScrollBar className="w-4" />
+        </ScrollArea>
+      </div>
+    );
+  }
+  if (selectedAssessment.sectionType === SectionType.LISTENING) {
+    return (
+      <div className="h-full">
+        <ScrollArea
+          type="always"
+          className="w-full h-full overflow-auto pl-4 pr-8"
+        >
+          <AudioPlayer src={selectedPart.audioFile} />
 
-                  {questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER' &&
-                    questionGroup.multiOneList.map((multiOne) => (
-                      <MultiOneRender multiOne={multiOne} key={multiOne.id} />
-                    ))}
-                  {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' &&
-                    questionGroup.multiMoreList.map((multiMore) => (
-                      <MultiMoreRender
-                        multiMore={multiMore}
-                        key={multiMore.id}
-                      />
-                    ))}
-                  {questionGroup.type === 'IDENTIFYING_INFORMATION' &&
-                    questionGroup.identifyInfoList.map((identifyInfo) => (
-                      <IdentifyInfoRender
-                        identifyInfo={identifyInfo}
-                        key={identifyInfo.id}
-                      />
-                    ))}
-                  {(questionGroup.type === 'COMPLETION' ||
-                    questionGroup.type === 'TABLE_COMPLETION') && (
-                    <CompletionRender questionGroup={questionGroup} />
-                  )}
-                  {questionGroup.type === 'MATCHING' && (
-                    <MatchingRender questionGroup={questionGroup} />
-                  )}
-                  {/* {questionGroup.type === 'MATCHING_HEADING' && (
-                    <MatchingHeadingRender
-                      matchingHeading={questionGroup.matchingHeading}
+          <div className="flex justify-end">
+            <ActionButton
+              actionType="create"
+              editType="createQuestionGroup"
+              data={{ part: selectedPart }}
+            >
+              <div className={buttonVariants()}>New Question Group</div>
+            </ActionButton>
+          </div>
+
+          {selectedPart.questionGroups.map((questionGroup) => {
+            return (
+              <div key={questionGroup.id} className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-bold">
+                      Questions {questionGroup.startQuestionNumber}-
+                      {questionGroup.endQuestionNumber}
+                    </p>
+                    <p className=" whitespace-pre-line">
+                      {questionGroup.title}
+                    </p>
+                  </div>
+                  <div>
+                    <ActionButton
+                      actionType="update"
+                      editType="editQuestionGroup"
+                      data={{ questionGroup }}
                     />
-                  )}
-                   */}
+                    <ActionButton
+                      actionType="delete"
+                      editType="deleteQuestionGroup"
+                      data={{ questionGroup }}
+                    />
+                  </div>
                 </div>
-              );
-            })}
-            <ScrollBar className="w-4" />
-          </ScrollArea>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
-  );
+
+                {questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER' &&
+                  questionGroup.multiOneList.map((multiOne) => (
+                    <MultiOneRender multiOne={multiOne} key={multiOne.id} />
+                  ))}
+                {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' &&
+                  questionGroup.multiMoreList.map((multiMore) => (
+                    <MultiMoreRender multiMore={multiMore} key={multiMore.id} />
+                  ))}
+                {questionGroup.type === 'IDENTIFYING_INFORMATION' &&
+                  questionGroup.identifyInfoList.map((identifyInfo) => (
+                    <IdentifyInfoRender
+                      identifyInfo={identifyInfo}
+                      key={identifyInfo.id}
+                    />
+                  ))}
+                {(questionGroup.type === 'COMPLETION' ||
+                  questionGroup.type === 'TABLE_COMPLETION') && (
+                  <CompletionRender questionGroup={questionGroup} />
+                )}
+                {questionGroup.type === 'MATCHING' && (
+                  <MatchingRender questionGroup={questionGroup} />
+                )}
+                {/* {questionGroup.type === 'MATCHING_HEADING' && (
+                      <MatchingHeadingRender
+                        matchingHeading={questionGroup.matchingHeading}
+                      />
+                    )}
+                    */}
+              </div>
+            );
+          })}
+          <ScrollBar className="w-4" />
+        </ScrollArea>
+      </div>
+    );
+  }
+  return null;
 };
 
 export default PartBodyContentRender;
