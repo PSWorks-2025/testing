@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { SectionType } from '@prisma/client';
 import { EditContext } from '@/global/edit-context';
 import { ExamContext } from '@/global/exam-context';
@@ -22,6 +22,7 @@ import { PassageRender } from '../../passage/passage-render';
 
 const PartBodyContentRender = () => {
   const { selectedPart, selectedAssessment } = useContext(ExamContext);
+  const [text, setText] = useState<string>('');
   if (!selectedPart) {
     return null;
   }
@@ -174,7 +175,14 @@ const PartBodyContentRender = () => {
               type="always"
               className="w-full h-full overflow-auto pl-4 pr-8"
             >
-              <textarea className="w-full h-screen bg-gray-100" />
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                className="w-full h-80 bg-gray-100"
+              />
+              <div className="text-right">
+                Words: {text.split(' ').filter((x) => x !== '').length}
+              </div>
               <ScrollBar className="w-4" />
             </ScrollArea>
           </ResizablePanel>
