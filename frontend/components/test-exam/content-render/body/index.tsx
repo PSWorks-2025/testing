@@ -144,25 +144,53 @@ const PartBodyContentRender = () => {
   if (selectedAssessment.sectionType === SectionType.WRITTING) {
     return (
       <div className="h-full">
-        <ScrollArea
-          type="always"
-          className="w-full h-full overflow-auto pl-4 pr-4"
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="rounded-lg flex-grow"
         >
-          <textarea className="w-full h-screen bg-gray-100" />
-          <ScrollBar className="w-4" />
-        </ScrollArea>
+          <ResizablePanel defaultSize={50} className="overflow-auto h-full">
+            <ScrollArea
+              type="always"
+              className="w-full h-full overflow-auto pl-4 pr-8"
+            >
+              {selectedPart.passage ? (
+                <PassageRender passage={selectedPart.passage} />
+              ) : (
+                <ActionButton
+                  actionType="create"
+                  editType="createPassage"
+                  data={{ part: selectedPart }}
+                >
+                  <div className={buttonVariants()}>New Passage</div>
+                </ActionButton>
+              )}
+
+              <ScrollBar className="w-4" />
+            </ScrollArea>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={50}>
+            <ScrollArea
+              type="always"
+              className="w-full h-full overflow-auto pl-4 pr-8"
+            >
+              <textarea className="w-full h-screen bg-gray-100" />
+              <ScrollBar className="w-4" />
+            </ScrollArea>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     );
   }
   if (selectedAssessment.sectionType === SectionType.LISTENING) {
     return (
       <div className="h-full">
+        <AudioPlayer src={selectedPart.audioFile} />
+
         <ScrollArea
           type="always"
           className="w-full h-full overflow-auto pl-4 pr-8"
         >
-          <AudioPlayer src={selectedPart.audioFile} />
-
           <div className="flex justify-end">
             <ActionButton
               actionType="create"

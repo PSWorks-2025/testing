@@ -33,35 +33,41 @@ const AudioPlayer: FC<AudioPlayerProps> = ({ src }) => {
   };
 
   // Calculate progress percentage for the progress bar
-  const progressPercentage = duration ? (currentTime / duration) * 100 : 0;
+  // const progressPercentage = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      {/* Audio element without built-in controls */}
+    <>
       <audio
         ref={audioRef}
         src={src}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
       />
+      {!wasPlayed ? (
+        <div className="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-75 flex items-center justify-center flex-col z-10">
+          {/* Audio element without built-in controls */}
 
-      {/* Play button */}
-      <button
-        onClick={handlePlay}
-        disabled={wasPlayed}
-        className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
-      >
-        Play
-      </button>
+          <p className="text-white">bruh bruh lmao lmao</p>
 
-      {/* Progress bar */}
-      <div className="w-full h-2 bg-gray-300 mt-4 rounded overflow-hidden">
-        <div
-          className="h-full bg-blue-600 transition-all duration-100"
-          style={{ width: `${progressPercentage}%` }}
-        />
-      </div>
-    </div>
+          <button
+            onClick={handlePlay}
+            className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+          >
+            Play
+          </button>
+
+          {/* Progress bar
+          <div className="w-full h-2 bg-gray-300 mt-4 rounded overflow-hidden">
+            <div
+              className="h-full bg-blue-600 transition-all duration-100"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div> */}
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 
