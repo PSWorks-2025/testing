@@ -16,29 +16,30 @@ export const MultiMoreRender = ({
 }) => {
   const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
   const [choiceIdList, setChoiceIdList] = useState<string[]>([]);
-  const { handleAnswerChange: handleAnswerSelected } = useExamHandler();
-  // useEffect(() => {
-  //   const answer = userAnswers.find(
-  //     (answer) => answer.questionId === multiMore.questionId
-  //   );
-  //   if (answer && answer.type === 'MULTI_MORE') {
-  //     setChoiceIdList(answer.choiceIdList);
-  //   }
-  // }, [userAnswers, multiMore.questionId]);
+  const { handleAnswerChange, handleQuestionSelected } = useExamHandler();
+  useEffect(() => {
+    const answer = userAnswers.find(
+      (answer) => answer.questionNumber === multiMore.question.questionNumber
+    );
+    if (answer && answer.type === 'MULTI_MORE') {
+      setChoiceIdList(answer.choiceIdList);
+    }
+  }, [userAnswers, multiMore.question.questionNumber]);
 
-  // if (!multiMore) {
-  //   return null;
-  // }
-  // const handleCheck = (checked: boolean, choiceId: string) => {
-  //   const updatedChoiceIdList = checked
-  //     ? [...choiceIdList, choiceId]
-  //     : choiceIdList.filter((id) => id !== choiceId);
-  //   handleAnswerSelected({
-  //     questionId: multiMore.questionId,
-  //     type: 'MULTI_MORE',
-  //     choiceIdList: updatedChoiceIdList
-  //   });
-  // };
+  if (!multiMore) {
+    return null;
+  }
+  const handleCheck = (checked: boolean, choiceId: string) => {
+    const updatedChoiceIdList = checked
+      ? [...choiceIdList, choiceId]
+      : choiceIdList.filter((id) => id !== choiceId);
+    handleQuestionSelected(multiMore.question.questionNumber);
+    handleAnswerChange({
+      questionNumber: multiMore.question.questionNumber,
+      type: 'MULTI_MORE',
+      choiceIdList: updatedChoiceIdList
+    });
+  };
 
   return (
     <div
@@ -46,7 +47,7 @@ export const MultiMoreRender = ({
       ref={questionRefs[multiMore.question.questionNumber - 1]}
       tabIndex={0}
     >
-      {/* <div className="flex items-center gap-2 ">
+      <div className="flex items-center gap-2 ">
         <p
           className={cn(
             'px-2 py-1',
@@ -94,7 +95,7 @@ export const MultiMoreRender = ({
             </div>
           </div>
         );
-      })} */}
+      })}
     </div>
   );
 };

@@ -17,7 +17,8 @@ export const IdentifyInfoRender = ({
 }) => {
   const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
   const [answer, setAnswer] = useState<AnswerType | undefined>(undefined);
-  const { handleAnswerChange: handleAnswerSelected } = useExamHandler();
+  const { handleAnswerChange, handleQuestionSelected } = useExamHandler();
+
   useEffect(() => {
     const answer = userAnswers.find(
       (answer) => answer.questionNumber === identifyInfo.question.questionNumber
@@ -50,13 +51,14 @@ export const IdentifyInfoRender = ({
       </div>
 
       <RadioGroup
-        onValueChange={(value: IdentifyChoice) =>
-          handleAnswerSelected({
+        onValueChange={(choiceId: IdentifyChoice) => {
+          handleQuestionSelected(identifyInfo.question.questionNumber);
+          handleAnswerChange({
             questionNumber: identifyInfo.question.questionNumber,
             type: 'IDENTIFY_INFO',
-            content: value
-          })
-        }
+            content: choiceId
+          });
+        }}
         value={answer && answer.type === 'IDENTIFY_INFO' ? answer.content : ''}
       >
         {[
@@ -69,6 +71,9 @@ export const IdentifyInfoRender = ({
             className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
           >
             <RadioGroupItem
+              onSelect={() =>
+                handleQuestionSelected(identifyInfo.question.questionNumber)
+              }
               value={answer}
               id={`${identifyInfo.id}-${answer}`}
             />

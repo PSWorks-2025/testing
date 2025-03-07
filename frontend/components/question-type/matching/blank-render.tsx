@@ -26,6 +26,8 @@ export function MatchingBlankRender({
     (prev) => prev.questionNumber === questionNumber
   );
 
+  // console.log(userAnswers);
+
   return (
     <>
       {answer && answer.type === 'MATCHING' && answer.content ? (
@@ -37,9 +39,9 @@ export function MatchingBlankRender({
               type: 'question'
             })
           }
-          // onDragStart={() =>
-          //   handleDragStart(question.questionGroupId, answer.matchingChoiceId)
-          // }
+          onDragStart={() =>
+            handleDragStart(question.questionGroupId, answer.matchingChoiceId)
+          }
           onDragOver={(event) =>
             handleDragOver({ event, type: 'question', questionId: question.id })
           }

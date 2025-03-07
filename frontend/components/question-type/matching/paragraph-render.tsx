@@ -32,7 +32,20 @@ const MatchingParagraphRender = ({
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   return (
-    <Slate editor={editor} initialValue={JSON.parse(matching.paragraph)}>
+    <Slate
+      editor={editor}
+      initialValue={[
+        {
+          type: 'paragraph',
+          children: [{ text: matching.paragraph }]
+        },
+        {
+          type: 'blank',
+          questionNumber: 5,
+          children: [{ text: 'bruh' }]
+        }
+      ]}
+    >
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}

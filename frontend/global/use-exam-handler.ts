@@ -7,12 +7,13 @@ import {
   updateRespond
 } from '@/actions/test-exam/question';
 import { createOrUpdateResult } from '@/actions/test-exam/result';
-import { number } from 'zod';
+import { number, string } from 'zod';
 import { CHOICE_OPTIONS } from '@/config/constants';
 import { AnswerType, ExamContext } from './exam-context';
 
 export const useExamHandler = () => {
   const {
+    activeTab,
     userAnswers,
     questionRefs,
     setCurrentRef,
@@ -133,7 +134,7 @@ export const useExamHandler = () => {
       const ref = questionRefs[currentRef + 1].current;
       if (ref) {
         ref.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        ref.focus();
+        // ref.focus();
       }
     } else {
       const nextPart = selectedAssessment.parts.find(
@@ -169,16 +170,21 @@ export const useExamHandler = () => {
       );
       if (prevPart) {
         setActiveTab(prevPart.id);
-        // setCurrentRef(
-        //   prevPart.questionGroups[prevPart.questionGroups.length - 1]
-        //     .endQuestionNumber - 1
-        // );
+        setCurrentRef(
+          prevPart.questionGroups[prevPart.questionGroups.length - 1]
+            .endQuestionNumber - 1
+        );
       }
     }
   }
 
   const isHasNextQuestion = currentRef < questionRefs.length - 1;
-  const isHasPrevQuestion = currentRef > 0;
+  const startID =
+    selectedAssessment &&
+    selectedAssessment.parts.find((part) => part.order === 1);
+  const isHasPrevQuestion =
+    startID && (currentRef > 0 || activeTab !== startID.id);
+
   return {
     handleAnswerChange,
     handleSubmit,
