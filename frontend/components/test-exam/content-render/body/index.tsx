@@ -144,7 +144,7 @@ const PartBodyContentRender = () => {
   }
   if (selectedAssessment.sectionType === SectionType.WRITTING) {
     return (
-      <div className="h-full">
+      <div className="h-screen">
         <ResizablePanelGroup
           direction="horizontal"
           className="rounded-lg flex-grow"
@@ -192,7 +192,7 @@ const PartBodyContentRender = () => {
   }
   if (selectedAssessment.sectionType === SectionType.LISTENING) {
     return (
-      <div className="h-full">
+      <div className="h-screen">
         <AudioPlayer src={selectedPart.audioFile} />
 
         <ScrollArea

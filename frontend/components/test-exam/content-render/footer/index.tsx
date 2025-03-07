@@ -1,9 +1,9 @@
-import { Fragment, useContext } from 'react'
-import { Check } from 'lucide-react'
-import { ExamContext } from '@/global/exam-context'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { TabsList } from '@/components/ui/tabs'
+import { Fragment, useContext } from 'react';
+import { Check } from 'lucide-react';
+import { ExamContext } from '@/global/exam-context';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { TabsList } from '@/components/ui/tabs';
 
 function FooterContentRender() {
   const {
@@ -12,15 +12,15 @@ function FooterContentRender() {
     setActiveTab,
     questionRefs,
     setCurrentRef: setCurrentQuestionIndex,
-    currentRef: currentQuestionIndex,
-  } = useContext(ExamContext)
+    currentRef: currentQuestionIndex
+  } = useContext(ExamContext);
   if (!selectedAssessment) {
-    return null
+    return null;
   }
   const handleMoveToDiv = (questionIndex: number) => {
-    questionRefs[questionIndex].current?.focus()
-    setCurrentQuestionIndex(questionIndex)
-  }
+    questionRefs[questionIndex].current?.focus();
+    setCurrentQuestionIndex(questionIndex);
+  };
   return (
     <TabsList className="flex justify-between items-center h-40">
       {selectedAssessment.parts.map((part) => (
@@ -68,7 +68,7 @@ function FooterContentRender() {
         <Check className="h-4 w-4" />
       </Button>
     </TabsList>
-  )
+  );
 }
 
-export default FooterContentRender
+export default FooterContentRender;
