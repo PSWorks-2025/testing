@@ -22,7 +22,6 @@ function FooterContentRender() {
     questionRefs[questionIndex].current?.focus();
     setCurrentQuestionIndex(questionIndex);
   };
-
   return (
     <TabsList className="flex justify-between items-center h-40">
       {selectedAssessment.parts.map((part) => (
