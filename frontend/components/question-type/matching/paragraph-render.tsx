@@ -43,6 +43,15 @@ const MatchingParagraphRender = ({
           type: 'blank',
           questionNumber: 5,
           children: [{ text: 'bruh' }]
+        },
+        {
+          type: 'paragraph',
+          children: [{ text: matching.paragraph }]
+        },
+        {
+          type: 'blank',
+          questionNumber: 6,
+          children: [{ text: 'bruh' }]
         }
       ]}
     >

@@ -2,6 +2,7 @@ import { DragEvent, useContext, useState } from 'react';
 import { DndContext } from '@/global/dnd-context';
 import { ExamContext } from '@/global/exam-context';
 import { useDnd } from '@/global/use-dnd';
+import { useExamHandler } from '@/global/use-exam-handler';
 import { cn } from '@/lib/utils';
 
 export function MatchingBlankRender({
@@ -10,6 +11,7 @@ export function MatchingBlankRender({
   questionNumber: number;
 }) {
   const { userAnswers, selectedPart, questionRefs } = useContext(ExamContext);
+  const { handleAnswerChange } = useExamHandler();
 
   const { handleDragOver, handleDragLeave, handleDrop, handleDragStart } =
     useDnd();
@@ -26,19 +28,24 @@ export function MatchingBlankRender({
     (prev) => prev.questionNumber === questionNumber
   );
 
-  // console.log(userAnswers);
-
   return (
     <>
       {answer && answer.type === 'MATCHING' && answer.content ? (
         <div
-          onDrop={(event) =>
+          onDrop={(event) => {
+            console.log(answer, questionNumber, 'bruh');
+            handleAnswerChange({
+              questionNumber: questionNumber,
+              type: 'MATCHING',
+              content: 'bruh',
+              matchingChoiceId: 'mc1'
+            });
             handleDrop({
               event,
               quesNum: question.questionNumber,
               type: 'question'
-            })
-          }
+            });
+          }}
           onDragStart={() =>
             handleDragStart(question.questionGroupId, answer.matchingChoiceId)
           }
@@ -57,13 +64,19 @@ export function MatchingBlankRender({
         </div>
       ) : (
         <div
-          onDrop={(event) =>
+          onDrop={(event) => {
+            handleAnswerChange({
+              questionNumber: questionNumber,
+              type: 'MATCHING',
+              content: 'bruh',
+              matchingChoiceId: 'mc1'
+            });
             handleDrop({
               event,
               quesNum: question.questionNumber,
               type: 'question'
-            })
-          }
+            });
+          }}
           onDragOver={(event) =>
             handleDragOver({ event, type: 'question', questionId: question.id })
           }
@@ -76,7 +89,9 @@ export function MatchingBlankRender({
               ? ' '
               : 'border-secondary'
           )}
-        />
+        >
+          {questionNumber}
+        </div>
       )}
     </>
   );

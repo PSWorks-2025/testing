@@ -1,9 +1,9 @@
-import { Fragment, useContext } from 'react'
-import { Check } from 'lucide-react'
-import { ExamContext } from '@/global/exam-context'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { TabsList } from '@/components/ui/tabs'
+import { Fragment, useContext } from 'react';
+import { Check } from 'lucide-react';
+import { ExamContext } from '@/global/exam-context';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { TabsList } from '@/components/ui/tabs';
 
 function FooterContentRender() {
   const {
@@ -13,14 +13,16 @@ function FooterContentRender() {
     questionRefs,
     setCurrentRef: setCurrentQuestionIndex,
     currentRef: currentQuestionIndex,
-  } = useContext(ExamContext)
+    userAnswers
+  } = useContext(ExamContext);
   if (!selectedAssessment) {
-    return null
+    return null;
   }
   const handleMoveToDiv = (questionIndex: number) => {
-    questionRefs[questionIndex].current?.focus()
-    setCurrentQuestionIndex(questionIndex)
-  }
+    questionRefs[questionIndex].current?.focus();
+    setCurrentQuestionIndex(questionIndex);
+  };
+
   return (
     <TabsList className="flex justify-between items-center h-40">
       {selectedAssessment.parts.map((part) => (
@@ -41,9 +43,14 @@ function FooterContentRender() {
                   >
                     <p
                       className={cn(
-                        'px-2',
+                        'px-2 mx-1',
                         currentQuestionIndex === question.questionNumber - 1
-                          ? 'border border-secondary-foreground'
+                          ? 'border border-secondary-foreground border'
+                          : '',
+                        userAnswers.find(
+                          (q) => q.questionNumber === question.questionNumber
+                        )
+                          ? 'border-t-3 border-t-green-500'
                           : ''
                       )}
                     >
@@ -68,7 +75,7 @@ function FooterContentRender() {
         <Check className="h-4 w-4" />
       </Button>
     </TabsList>
-  )
+  );
 }
 
-export default FooterContentRender
+export default FooterContentRender;

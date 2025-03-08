@@ -232,7 +232,7 @@ export const assessments = [
                   createdAt: new Date(),
                   updatedAt: new Date(),
                   content: 'Mock Matching Choice 2',
-                  questionId: 'q5',
+                  questionId: 'q6',
                   matchingId: 'm1'
                 }
                 // Add more mock matching choices as needed
@@ -771,7 +771,7 @@ export const assessments = [
                 title: 'Mock Multiple Choice More Answer 1',
                 explanation: 'Explanation for Multiple Choice More Answer 1',
                 expectedAnswers: ['Answer 1', 'Answer 2'],
-                questionId: 'q10',
+                questionId: 'q7',
                 questionGroupId: 'g1',
                 choices: [
                   {
@@ -799,7 +799,7 @@ export const assessments = [
                   // Add more mock choices as needed
                 ],
                 question: {
-                  id: 'q1',
+                  id: 'q7',
                   createdAt: new Date(),
                   updatedAt: new Date(),
                   questionNumber: 7,
@@ -819,7 +819,7 @@ export const assessments = [
                 title: 'Mock Multiple Choice More Answer 1',
                 explanation: 'Explanation for Multiple Choice More Answer 1',
                 expectedAnswers: ['Answer 1', 'Answer 2'],
-                questionId: 'q11',
+                questionId: 'q8',
                 questionGroupId: 'g1',
                 choices: [
                   {
@@ -847,7 +847,7 @@ export const assessments = [
                   // Add more mock choices as needed
                 ],
                 question: {
-                  id: 'q11',
+                  id: 'q8',
                   createdAt: new Date(),
                   updatedAt: new Date(),
                   questionNumber: 8,

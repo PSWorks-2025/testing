@@ -110,6 +110,13 @@ export const useExamHandler = () => {
             return { questionNumber, type, content: props.content };
           case 'COMPLETION':
             return { questionNumber, type, content: props.content };
+          case 'MATCHING':
+            return {
+              questionNumber,
+              type,
+              content: props.content,
+              matchingChoiceId: props.matchingChoiceId
+            };
           default:
             throw new Error(`Unsupported answer type: ${type}`);
         }

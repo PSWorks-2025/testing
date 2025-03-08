@@ -106,6 +106,8 @@ export const useDnd = () => {
       }) => {
     event.preventDefault();
 
+    // console.log(questionId);
+
     if (type === 'groupChoice') {
       setChoiceGroupOver(true);
     }
@@ -142,7 +144,7 @@ export const useDnd = () => {
         ref.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (type === 'groupChoice') {
-      console.log('aaaaaaa');
+      // console.log('aaaaaaa');
     }
   };
   return {
